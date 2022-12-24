@@ -69,14 +69,14 @@ void loop() {
   static unsigned long lastNoteOn;
   static uint8_t beatCount = 0;
 
-  uint8_t noteIntervals[] = {0, 5, 7, 12, 24, 10, 14};
+  uint8_t noteIntervals[] = {0, 2, 4, 6, 7, 9, 11, 12, 14, 18, 22};
   uint8_t lydianScale[7] = {0, 2, 4, 6, 7, 9, 11};
   uint8_t noteIntervalIndex;
   unsigned long now = millis();
-  if (now - lastNoteOn >= 200) {
+  if (now - lastNoteOn >= 150) {
     noteIntervalIndex = rand() % (sizeof(noteIntervals) / sizeof(uint8_t));
     ledState = !ledState;
-    event = rand() % 3; // randomize note on or off
+    event = rand() % 4; // randomize note on or off
     digitalWrite(2, ledState);
 
     uint8_t note = 32 + lydianScale[rand() % 7];
@@ -85,12 +85,12 @@ void loop() {
       Demo_noteOn(ctx, note + noteIntervals[noteIntervalIndex], 127, 1);
       Demo_controlChange(ctx, 32, rand() % 127, 1); // randomize filter frequency
       Demo_controlChange(ctx, 33, rand() % 64, 1);  // randomize resonance
-
     } else if (event == 1) {
       Demo_noteOff(ctx, note, 1);
       Demo_noteOff(ctx, note + noteIntervals[noteIntervalIndex], 1);
-    } else {
+    } else if (event == 2){
       Demo_controlChange(ctx, 34, rand() % 127, 1); // randomize delay time
+    } else if (event == 3){
       Demo_controlChange(ctx, 35, rand() % 80, 1);  // randomize delay feedback
     }
     lastNoteOn = now;
