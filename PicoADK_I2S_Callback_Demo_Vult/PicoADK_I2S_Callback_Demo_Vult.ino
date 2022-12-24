@@ -74,7 +74,7 @@ void loop() {
     if (event) {
       Demo_noteOn(ctx, note, 127, 1);
       Demo_noteOn(ctx, note+16, 127, 1);
-      Demo_controlChange(ctx, 33, rand() % 127, 1);
+      Demo_controlChange(ctx, 32, rand() % 127, 1);
     } else {
       Demo_noteOff(ctx, note, 1);
     }
