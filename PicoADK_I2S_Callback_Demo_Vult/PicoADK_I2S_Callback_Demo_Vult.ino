@@ -57,34 +57,41 @@ void setup() {
   }
 
   // Feedback and Time of delay at 50%.
-  Demo_controlChange(ctx, 34, 64, 1);
-  Demo_controlChange(ctx, 35, 64, 1);
+  // Demo_controlChange(ctx, 34, 64, 1);
+  // Demo_controlChange(ctx, 35, 64, 1);
   
 }
 
 void loop() {
 
-  static bool ledState, event;
+  static bool ledState;
+  static uint8_t event;
   static unsigned long lastNoteOn;
+  static uint8_t beatCount = 0;
 
   uint8_t noteIntervals[] = {0, 5, 7, 12, 24, 10, 14};
+  uint8_t lydianScale[7] = {0, 2, 4, 6, 7, 9, 11};
   uint8_t noteIntervalIndex;
   unsigned long now = millis();
   if (now - lastNoteOn >= 200) {
     noteIntervalIndex = rand() % (sizeof(noteIntervals) / sizeof(uint8_t));
     ledState = !ledState;
-    event = rand() % 2;
+    event = rand() % 3; // randomize note on or off
     digitalWrite(2, ledState);
 
-    uint8_t note = 32 + (rand() % 12);
-    if (event) {
+    uint8_t note = 32 + lydianScale[rand() % 7];
+    if (event == 0) {
       Demo_noteOn(ctx, note, 127, 1);
       Demo_noteOn(ctx, note + noteIntervals[noteIntervalIndex], 127, 1);
       Demo_controlChange(ctx, 32, rand() % 127, 1); // randomize filter frequency
       Demo_controlChange(ctx, 33, rand() % 64, 1);  // randomize resonance
-    } else {
+
+    } else if (event == 1) {
       Demo_noteOff(ctx, note, 1);
       Demo_noteOff(ctx, note + noteIntervals[noteIntervalIndex], 1);
+    } else {
+      Demo_controlChange(ctx, 34, rand() % 127, 1); // randomize delay time
+      Demo_controlChange(ctx, 35, rand() % 80, 1);  // randomize delay feedback
     }
     lastNoteOn = now;
   }

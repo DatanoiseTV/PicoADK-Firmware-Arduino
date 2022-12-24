@@ -6,6 +6,12 @@ fun smooth(input:real) : real {
   return x;
 }
 
+fun verysmooth(input:real): real {
+  mem x1;
+  x1 = x1 + (input-x1) * 0.001;
+  return x1;
+}
+
 // Returns true if the value changes from 0 to anything
 fun edge(x:bool):bool {
     mem pre_x;
@@ -136,8 +142,8 @@ fun delay(x:real, time:real, feedback:real) : real {
    mem buffer : array(real,22050);
    mem write_pos;
    // Constraints the parameter values
-   time     = clip(time,0.0,1.0);
-   feedback = clip(feedback,0.0,1.0);
+   time     = clip(verysmooth(time),0.0,1.0);
+   feedback = clip(verysmooth(feedback),0.0,1.0);
    // Gets the position in the buffer to read
    val index_r  = real(size(buffer)) * time;
    val index_i  = int(floor(index_r));
