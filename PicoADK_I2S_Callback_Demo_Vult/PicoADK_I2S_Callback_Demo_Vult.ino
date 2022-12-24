@@ -7,18 +7,27 @@ Demo_process_type ctx;
 // Create the I2S port using a PIO state machine
 I2S i2s(OUTPUT);
 
-const int sampleRate = 22050;
 int32_t sample;
 
+int32_t fix16_to_int32(fix16_t x)
+{
+  fix16_t out;
+  if (x >= int_to_fix(1))
+    out = int_to_fix(1) - 1;
+  else if (x <= int_to_fix(-1))
+    out = int_to_fix(-1) + 1;
+  else
+    out = x;
+  return out << 15u;
+}
 
 void cb() {
-  while(i2s.availableForWrite()) {
-    int16_t sample = Demo_process(ctx, 0.0);
-
+  while (i2s.availableForWrite()) {
+    sample = fix16_to_int32(Demo_process(ctx, 0.0));
     // write the same sample twice, once for left and once for the right channel
     i2s.write(sample);
     i2s.write(sample);
-  
+
   }
 }
 
@@ -44,9 +53,8 @@ void setup() {
   i2s.setBitsPerSample(32);
   i2s.onTransmit(cb);
   // start I2S at the sample rate with 16-bits per sample
-  if (!i2s.begin(sampleRate)) {
+  if (!i2s.begin(44100)) {
     Serial.println("Failed to initialize I2S!");
-    while (1); // do nothing
   }
 
 }
@@ -56,14 +64,14 @@ bool ledState = 0;
 
 void loop() {
 
-    unsigned long now = millis();
-    if(now - lastRun >= 1000){
-      ledState != ledState;
-      digitalWrite(2, ledState);
-      
-      uint8_t note = 40 + (rand() % 12);
-      Demo_noteOn(ctx, note, 127, 1);
-      lastRun = now;
-    }
-  
+  unsigned long now = millis();
+  if (now - lastRun >= 500) {
+    ledState = !ledState;
+    digitalWrite(2, ledState);
+
+    uint8_t note = 40 + (rand() % 12);
+    Demo_noteOn(ctx, note, 127, 1);
+    lastRun = now;
+  }
+
 }
