@@ -22,8 +22,8 @@ fun change(x:real):bool {
     return v;
 }
 
-// Converts the MIDI note to increment rate at a 44100 sample rate
-fun pitchToRate(d) return 8.1758*exp(0.0577623*d)/44100.0;
+// Converts the MIDI note to increment rate at a sample rate
+fun pitchToRate(d) return 8.1758*exp(0.0577623*d)/samplerate();
 
 fun phasor(pitch:real,reset:bool){
     mem rate,phase;

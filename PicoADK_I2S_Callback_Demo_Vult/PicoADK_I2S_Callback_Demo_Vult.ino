@@ -1,7 +1,6 @@
 #include <I2S.h>
 #include "demo.h" // Vult compiled code using  vultc -ccode -o demo -real fixed -i examples/osc -i examples/util -i examples/env demo.vult
 
-
 Demo_process_type ctx;
 
 // Create the I2S port using a PIO state machine
@@ -44,8 +43,8 @@ void setup() {
 
   // Initialize vult
   Demo_process_init(ctx);
-//  Demo_default_init(ctx);
-//  Demo_default(ctx);
+  Demo_default_init(ctx);
+  Demo_default(ctx);
 
   Serial.begin(115200);
   Serial.println("I2S simple tone");
@@ -53,16 +52,23 @@ void setup() {
   i2s.setBitsPerSample(32);
   i2s.onTransmit(cb);
   // start I2S at the sample rate with 16-bits per sample
-  if (!i2s.begin(44100)) {
+  if (!i2s.begin(48000)) {
     Serial.println("Failed to initialize I2S!");
   }
 
+
+  Demo_controlChange(ctx, 34, 64, 1);
+  Demo_controlChange(ctx, 35, 64, 1);
+  
 }
 
 void loop() {
 
   static bool ledState, event;
   static unsigned long lastNoteOn;
+
+  uint8_t noteIntervals[4] = {0, 5, 7, 12};
+  uint8_t noteIntervalIndex = rand() % 4;
 
   unsigned long now = millis();
   if (now - lastNoteOn >= 250) {
@@ -73,10 +79,12 @@ void loop() {
     uint8_t note = 32 + (rand() % 12);
     if (event) {
       Demo_noteOn(ctx, note, 127, 1);
-      Demo_noteOn(ctx, note+16, 127, 1);
+      Demo_noteOn(ctx, note + noteIntervals[noteIntervalIndex], 127, 1);
       Demo_controlChange(ctx, 32, rand() % 127, 1);
+      Demo_controlChange(ctx, 33, rand() % 64, 1);
     } else {
       Demo_noteOff(ctx, note, 1);
+      Demo_noteOff(ctx, note + noteIntervals[noteIntervalIndex], 1);
     }
     lastNoteOn = now;
   }

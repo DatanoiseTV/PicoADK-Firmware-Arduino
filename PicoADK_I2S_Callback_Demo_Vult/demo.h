@@ -81,7 +81,7 @@ static_inline uint8_t Demo_change(Demo__ctx_type_2 &_ctx, fix16_t x){
 }
 
 static_inline fix16_t Demo_pitchToRate(fix16_t d){
-   return fix_mul(0xc /* 0.000185 */,fix_exp(fix_mul(0xec9 /* 0.057762 */,d)));
+   return fix_mul(0xb /* 0.000170 */,fix_exp(fix_mul(0xec9 /* 0.057762 */,d)));
 };
 
 typedef struct Demo__ctx_type_4 {
@@ -109,7 +109,7 @@ static_inline void Demo_phasorInit_init(Demo__ctx_type_4 &_output_){
 }
 
 static_inline void Demo_phasorInit(Demo__ctx_type_4 &_ctx){
-   _ctx.rate = 0x1e9 /* 0.007475 */;
+   _ctx.rate = 0x1c2 /* 0.006867 */;
 };
 
 typedef struct Demo__ctx_type_5 {
