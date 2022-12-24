@@ -23,10 +23,10 @@ int32_t fix16_to_int32(fix16_t x)
 
 void cb() {
   while (i2s.availableForWrite()) {
-    sample = fix16_to_int32(Demo_process(ctx, 0.0));
+    fix16_t smp = Demo_process(ctx, 0.0);
     // write the same sample twice, once for left and once for the right channel
-    i2s.write(sample);
-    i2s.write(sample);
+    i2s.write(fix16_to_int32(smp));
+    i2s.write(fix16_to_int32(smp));
 
   }
 }
@@ -44,8 +44,8 @@ void setup() {
 
   // Initialize vult
   Demo_process_init(ctx);
-  Demo_default_init(ctx);
-  Demo_default(ctx);
+//  Demo_default_init(ctx);
+//  Demo_default(ctx);
 
   Serial.begin(115200);
   Serial.println("I2S simple tone");
@@ -59,19 +59,27 @@ void setup() {
 
 }
 
-unsigned long lastRun = 0;
-bool ledState = 0;
-
 void loop() {
 
+  static bool ledState, event;
+  static unsigned long lastNoteOn;
+
   unsigned long now = millis();
-  if (now - lastRun >= 500) {
+  if (now - lastNoteOn >= 250) {
     ledState = !ledState;
+    event = rand() % 2;
     digitalWrite(2, ledState);
 
-    uint8_t note = 40 + (rand() % 12);
-    Demo_noteOn(ctx, note, 127, 1);
-    lastRun = now;
+    uint8_t note = 32 + (rand() % 12);
+    if (event) {
+      Demo_noteOn(ctx, note, 127, 1);
+      Demo_noteOn(ctx, note+16, 127, 1);
+      Demo_controlChange(ctx, 33, rand() % 127, 1);
+    } else {
+      Demo_noteOff(ctx, note, 1);
+    }
+    lastNoteOn = now;
   }
+
 
 }

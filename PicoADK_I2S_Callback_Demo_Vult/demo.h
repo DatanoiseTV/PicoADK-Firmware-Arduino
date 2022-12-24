@@ -26,29 +26,54 @@ static_inline void Demo_smooth_init(Demo__ctx_type_0 &_output_){
 }
 
 static_inline fix16_t Demo_smooth(Demo__ctx_type_0 &_ctx, fix16_t input){
-   _ctx.x = (_ctx.x + fix_mul(0x147 /* 0.005000 */,(input + (- _ctx.x))));
+   _ctx.x = (_ctx.x + fix_mul(0x1999 /* 0.100000 */,(input + (- _ctx.x))));
    return _ctx.x;
 }
 
 typedef struct Demo__ctx_type_1 {
-   fix16_t pre_x;
+   uint8_t pre_x;
 } Demo__ctx_type_1;
 
-typedef Demo__ctx_type_1 Demo_change_type;
+typedef Demo__ctx_type_1 Demo_edge_type;
 
 static_inline void Demo__ctx_type_1_init(Demo__ctx_type_1 &_output_){
    Demo__ctx_type_1 _ctx;
+   _ctx.pre_x = false;
+   _output_ = _ctx;
+   return ;
+}
+
+static_inline void Demo_edge_init(Demo__ctx_type_1 &_output_){
+   Demo__ctx_type_1_init(_output_);
+   return ;
+}
+
+static_inline uint8_t Demo_edge(Demo__ctx_type_1 &_ctx, uint8_t x){
+   uint8_t v;
+   v = ((_ctx.pre_x != x) && (_ctx.pre_x == false));
+   _ctx.pre_x = x;
+   return v;
+}
+
+typedef struct Demo__ctx_type_2 {
+   fix16_t pre_x;
+} Demo__ctx_type_2;
+
+typedef Demo__ctx_type_2 Demo_change_type;
+
+static_inline void Demo__ctx_type_2_init(Demo__ctx_type_2 &_output_){
+   Demo__ctx_type_2 _ctx;
    _ctx.pre_x = 0x0 /* 0.000000 */;
    _output_ = _ctx;
    return ;
 }
 
-static_inline void Demo_change_init(Demo__ctx_type_1 &_output_){
-   Demo__ctx_type_1_init(_output_);
+static_inline void Demo_change_init(Demo__ctx_type_2 &_output_){
+   Demo__ctx_type_2_init(_output_);
    return ;
 }
 
-static_inline uint8_t Demo_change(Demo__ctx_type_1 &_ctx, fix16_t x){
+static_inline uint8_t Demo_change(Demo__ctx_type_2 &_ctx, fix16_t x){
    uint8_t v;
    v = (_ctx.pre_x != x);
    _ctx.pre_x = x;
@@ -59,93 +84,299 @@ static_inline fix16_t Demo_pitchToRate(fix16_t d){
    return fix_mul(0xc /* 0.000185 */,fix_exp(fix_mul(0xec9 /* 0.057762 */,d)));
 };
 
-typedef struct Demo__ctx_type_3 {
+typedef struct Demo__ctx_type_4 {
    fix16_t rate;
    fix16_t phase;
-   Demo__ctx_type_1 _inst1f1;
-} Demo__ctx_type_3;
-
-typedef Demo__ctx_type_3 Demo_phasor_type;
-
-void Demo__ctx_type_3_init(Demo__ctx_type_3 &_output_);
-
-static_inline void Demo_phasor_init(Demo__ctx_type_3 &_output_){
-   Demo__ctx_type_3_init(_output_);
-   return ;
-}
-
-fix16_t Demo_phasor(Demo__ctx_type_3 &_ctx, fix16_t pitch, uint8_t reset);
-
-typedef struct Demo__ctx_type_4 {
-   fix16_t volume;
-   fix16_t pre_phase1;
-   fix16_t pitch;
-   fix16_t detune;
-   Demo__ctx_type_0 _inst4c7;
-   Demo__ctx_type_3 _inst327;
-   Demo__ctx_type_0 _inst2c7;
-   Demo__ctx_type_3 _inst127;
+   Demo__ctx_type_2 _inst1f1;
 } Demo__ctx_type_4;
 
-typedef Demo__ctx_type_4 Demo_process_type;
+typedef Demo__ctx_type_4 Demo_phasor_type;
 
 void Demo__ctx_type_4_init(Demo__ctx_type_4 &_output_);
 
-static_inline void Demo_process_init(Demo__ctx_type_4 &_output_){
+static_inline void Demo_phasor_init(Demo__ctx_type_4 &_output_){
    Demo__ctx_type_4_init(_output_);
    return ;
 }
 
-fix16_t Demo_process(Demo__ctx_type_4 &_ctx, fix16_t input);
+fix16_t Demo_phasor(Demo__ctx_type_4 &_ctx, fix16_t pitch, uint8_t reset);
 
-typedef Demo__ctx_type_4 Demo_noteOn_type;
+typedef Demo__ctx_type_4 Demo_phasorInit_type;
 
-static_inline void Demo_noteOn_init(Demo__ctx_type_4 &_output_){
+static_inline void Demo_phasorInit_init(Demo__ctx_type_4 &_output_){
    Demo__ctx_type_4_init(_output_);
    return ;
 }
 
-static_inline void Demo_noteOn(Demo__ctx_type_4 &_ctx, int note, int velocity, int channel){
-   _ctx.pitch = int_to_fix(note);
+static_inline void Demo_phasorInit(Demo__ctx_type_4 &_ctx){
+   _ctx.rate = 0x1e9 /* 0.007475 */;
 };
 
-typedef Demo__ctx_type_4 Demo_noteOff_type;
+typedef struct Demo__ctx_type_5 {
+   fix16_t buffer[128];
+   Demo__ctx_type_4 _inst127;
+} Demo__ctx_type_5;
 
-static_inline void Demo_noteOff_init(Demo__ctx_type_4 &_output_){
-   Demo__ctx_type_4_init(_output_);
+typedef Demo__ctx_type_5 Demo_sineWave_type;
+
+void Demo__ctx_type_5_init(Demo__ctx_type_5 &_output_);
+
+static_inline void Demo_sineWave_init(Demo__ctx_type_5 &_output_){
+   Demo__ctx_type_5_init(_output_);
    return ;
 }
 
-static_inline void Demo_noteOff(Demo__ctx_type_4 &_ctx, int note, int channel){
-}
+fix16_t Demo_sineWave(Demo__ctx_type_5 &_ctx, fix16_t pitch, uint8_t reset);
 
-typedef Demo__ctx_type_4 Demo_controlChange_type;
+typedef Demo__ctx_type_5 Demo_sineInit_type;
 
-static_inline void Demo_controlChange_init(Demo__ctx_type_4 &_output_){
-   Demo__ctx_type_4_init(_output_);
+static_inline void Demo_sineInit_init(Demo__ctx_type_5 &_output_){
+   Demo__ctx_type_5_init(_output_);
    return ;
 }
 
-static_inline void Demo_controlChange(Demo__ctx_type_4 &_ctx, int control, int value, int channel){
-   if(control == 30){
-      _ctx.volume = fix_mul(0x204 /* 0.007874 */,int_to_fix(value));
-   }
-   if(control == 31){
-      _ctx.detune = fix_mul(0x204 /* 0.007874 */,int_to_fix(value));
-   }
-}
+void Demo_sineInit(Demo__ctx_type_5 &_ctx);
 
-typedef Demo__ctx_type_4 Demo_default_type;
+typedef struct Demo__ctx_type_6 {
+   fix16_t x;
+   Demo__ctx_type_1 _inst1fd;
+} Demo__ctx_type_6;
 
-static_inline void Demo_default_init(Demo__ctx_type_4 &_output_){
-   Demo__ctx_type_4_init(_output_);
+typedef Demo__ctx_type_6 Demo_slide_type;
+
+void Demo__ctx_type_6_init(Demo__ctx_type_6 &_output_);
+
+static_inline void Demo_slide_init(Demo__ctx_type_6 &_output_){
+   Demo__ctx_type_6_init(_output_);
    return ;
 }
 
-static_inline void Demo_default(Demo__ctx_type_4 &_ctx){
-   _ctx.volume = 0x10000 /* 1.000000 */;
-   _ctx.pitch = 0x2d0000 /* 45.000000 */;
-   _ctx.detune = 0x0 /* 0.000000 */;
+fix16_t Demo_slide(Demo__ctx_type_6 &_ctx, fix16_t gate, fix16_t rate);
+
+typedef struct Demo__ctx_type_7 {
+   fix16_t x;
+} Demo__ctx_type_7;
+
+typedef Demo__ctx_type_7 Demo_env_type;
+
+static_inline void Demo__ctx_type_7_init(Demo__ctx_type_7 &_output_){
+   Demo__ctx_type_7 _ctx;
+   _ctx.x = 0x0 /* 0.000000 */;
+   _output_ = _ctx;
+   return ;
+}
+
+static_inline void Demo_env_init(Demo__ctx_type_7 &_output_){
+   Demo__ctx_type_7_init(_output_);
+   return ;
+}
+
+fix16_t Demo_env(Demo__ctx_type_7 &_ctx, fix16_t input, fix16_t decay);
+
+typedef struct Demo__ctx_type_8 {
+   Demo__ctx_type_5 _inst45e;
+   Demo__ctx_type_1 _inst3fd;
+   Demo__ctx_type_7 _inst2c7;
+   Demo__ctx_type_7 _inst1c7;
+} Demo__ctx_type_8;
+
+typedef Demo__ctx_type_8 Demo_drum_type;
+
+void Demo__ctx_type_8_init(Demo__ctx_type_8 &_output_);
+
+static_inline void Demo_drum_init(Demo__ctx_type_8 &_output_){
+   Demo__ctx_type_8_init(_output_);
+   return ;
+}
+
+static_inline fix16_t Demo_drum(Demo__ctx_type_8 &_ctx, fix16_t gate, fix16_t pitch, fix16_t stretch, fix16_t time, fix16_t decay){
+   fix16_t actual;
+   actual = fix_mul(0x300000 /* 48.000000 */,(0x10000 /* 1.000000 */ + (- Demo_env(_ctx._inst1c7,gate,decay))));
+   return fix_mul(Demo_env(_ctx._inst2c7,gate,decay),Demo_sineWave(_ctx._inst45e,(pitch + (- actual)),Demo_edge(_ctx._inst3fd,(gate > 0x0 /* 0.000000 */))));
+}
+
+typedef struct Demo__ctx_type_9 {
+   fix16_t phase;
+   Demo__ctx_type_1 _inst1fd;
+} Demo__ctx_type_9;
+
+typedef Demo__ctx_type_9 Demo_lfo_type;
+
+void Demo__ctx_type_9_init(Demo__ctx_type_9 &_output_);
+
+static_inline void Demo_lfo_init(Demo__ctx_type_9 &_output_){
+   Demo__ctx_type_9_init(_output_);
+   return ;
+}
+
+fix16_t Demo_lfo(Demo__ctx_type_9 &_ctx, fix16_t f, uint8_t gate);
+
+typedef struct Demo__ctx_type_10 {
+   fix16_t dlow;
+   fix16_t dband;
+} Demo__ctx_type_10;
+
+typedef Demo__ctx_type_10 Demo_svf_step_type;
+
+void Demo__ctx_type_10_init(Demo__ctx_type_10 &_output_);
+
+static_inline void Demo_svf_step_init(Demo__ctx_type_10 &_output_){
+   Demo__ctx_type_10_init(_output_);
+   return ;
+}
+
+fix16_t Demo_svf_step(Demo__ctx_type_10 &_ctx, fix16_t input, fix16_t g, fix16_t q, int sel);
+
+typedef struct Demo__ctx_type_11 {
+   Demo__ctx_type_10 step;
+   fix16_t g;
+   Demo__ctx_type_2 _inst1f1;
+} Demo__ctx_type_11;
+
+typedef Demo__ctx_type_11 Demo_svf_type;
+
+void Demo__ctx_type_11_init(Demo__ctx_type_11 &_output_);
+
+static_inline void Demo_svf_init(Demo__ctx_type_11 &_output_){
+   Demo__ctx_type_11_init(_output_);
+   return ;
+}
+
+fix16_t Demo_svf(Demo__ctx_type_11 &_ctx, fix16_t input, fix16_t fc, fix16_t q, int sel);
+
+typedef struct Demo__ctx_type_12 {
+   int write_pos;
+   fix16_t buffer[22050];
+} Demo__ctx_type_12;
+
+typedef Demo__ctx_type_12 Demo_delay_type;
+
+void Demo__ctx_type_12_init(Demo__ctx_type_12 &_output_);
+
+static_inline void Demo_delay_init(Demo__ctx_type_12 &_output_){
+   Demo__ctx_type_12_init(_output_);
+   return ;
+}
+
+fix16_t Demo_delay(Demo__ctx_type_12 &_ctx, fix16_t x, fix16_t time, fix16_t feedback);
+
+typedef struct Demo__ctx_type_13 {
+   fix16_t y1;
+   fix16_t x1;
+} Demo__ctx_type_13;
+
+typedef Demo__ctx_type_13 Demo_dcblock_type;
+
+void Demo__ctx_type_13_init(Demo__ctx_type_13 &_output_);
+
+static_inline void Demo_dcblock_init(Demo__ctx_type_13 &_output_){
+   Demo__ctx_type_13_init(_output_);
+   return ;
+}
+
+fix16_t Demo_dcblock(Demo__ctx_type_13 &_ctx, fix16_t x0);
+
+typedef struct Demo__ctx_type_14 {
+   fix16_t pre_phase1;
+   Demo__ctx_type_7 _inst4c7;
+   Demo__ctx_type_4 _inst327;
+   Demo__ctx_type_0 _inst2c7;
+   Demo__ctx_type_4 _inst127;
+} Demo__ctx_type_14;
+
+typedef Demo__ctx_type_14 Demo_voice1_type;
+
+void Demo__ctx_type_14_init(Demo__ctx_type_14 &_output_);
+
+static_inline void Demo_voice1_init(Demo__ctx_type_14 &_output_){
+   Demo__ctx_type_14_init(_output_);
+   return ;
+}
+
+fix16_t Demo_voice1(Demo__ctx_type_14 &_ctx, fix16_t pitch, fix16_t detune, fix16_t gate);
+
+typedef struct Demo__ctx_type_15 {
+   Demo__ctx_type_12 _inst56d;
+   Demo__ctx_type_7 _inst4c7;
+   Demo__ctx_type_11 _inst392;
+   Demo__ctx_type_13 _inst245;
+   Demo__ctx_type_4 _inst127;
+} Demo__ctx_type_15;
+
+typedef Demo__ctx_type_15 Demo_voice2_type;
+
+void Demo__ctx_type_15_init(Demo__ctx_type_15 &_output_);
+
+static_inline void Demo_voice2_init(Demo__ctx_type_15 &_output_){
+   Demo__ctx_type_15_init(_output_);
+   return ;
+}
+
+fix16_t Demo_voice2(Demo__ctx_type_15 &_ctx, fix16_t pitch, fix16_t f, fix16_t res, fix16_t time, fix16_t feed, fix16_t gate);
+
+typedef struct Demo__ctx_type_16 {
+   fix16_t voice2_res;
+   fix16_t voice2_pitch;
+   fix16_t voice2_gate;
+   fix16_t voice2_f;
+   fix16_t voice1_pitch;
+   fix16_t voice1_gate;
+   fix16_t voice1_detune;
+   fix16_t time;
+   fix16_t feed;
+   fix16_t drum_pitch;
+   fix16_t drum_gate;
+   Demo__ctx_type_15 _inst346;
+   Demo__ctx_type_14 _inst21;
+   Demo__ctx_type_8 _inst172;
+} Demo__ctx_type_16;
+
+typedef Demo__ctx_type_16 Demo_process_type;
+
+void Demo__ctx_type_16_init(Demo__ctx_type_16 &_output_);
+
+static_inline void Demo_process_init(Demo__ctx_type_16 &_output_){
+   Demo__ctx_type_16_init(_output_);
+   return ;
+}
+
+fix16_t Demo_process(Demo__ctx_type_16 &_ctx, fix16_t input);
+
+typedef Demo__ctx_type_16 Demo_noteOn_type;
+
+static_inline void Demo_noteOn_init(Demo__ctx_type_16 &_output_){
+   Demo__ctx_type_16_init(_output_);
+   return ;
+}
+
+void Demo_noteOn(Demo__ctx_type_16 &_ctx, int note, int velocity, int channel);
+
+typedef Demo__ctx_type_16 Demo_noteOff_type;
+
+static_inline void Demo_noteOff_init(Demo__ctx_type_16 &_output_){
+   Demo__ctx_type_16_init(_output_);
+   return ;
+}
+
+void Demo_noteOff(Demo__ctx_type_16 &_ctx, int note, int channel);
+
+typedef Demo__ctx_type_16 Demo_controlChange_type;
+
+static_inline void Demo_controlChange_init(Demo__ctx_type_16 &_output_){
+   Demo__ctx_type_16_init(_output_);
+   return ;
+}
+
+void Demo_controlChange(Demo__ctx_type_16 &_ctx, int control, int value, int channel);
+
+typedef Demo__ctx_type_16 Demo_default_type;
+
+static_inline void Demo_default_init(Demo__ctx_type_16 &_output_){
+   Demo__ctx_type_16_init(_output_);
+   return ;
+}
+
+static_inline void Demo_default(Demo__ctx_type_16 &_ctx){
 }
 
 
