@@ -199,11 +199,11 @@ fun process(input:real){
 and noteOn(note:int,velocity:int,channel:int){
   if(note==12)
     drum_gate = 1.0;
-  if(note>=32 && note<=47) {
+  if(note>=24 && note<=47) {
     voice1_gate = 1.0;
     voice1_pitch = real(note);
   }
-  if(note>=48 && note<=63) {
+  if(note>=48 && note<=80) {
     voice2_gate = 1.0;
     voice2_pitch = real(note);
   }
@@ -213,10 +213,10 @@ and noteOn(note:int,velocity:int,channel:int){
 and noteOff(note:int,channel:int){
    if(note==12)
       drum_gate = 0.0;
-   if(note>=32 && note<=47) {
+   if(note>=24 && note<=47) {
       voice1_gate = 0.0;
    }
-   if(note>=48 && note<=63) {
+   if(note>=48 && note<=80) {
       voice2_gate = 0.0;
    }
 }

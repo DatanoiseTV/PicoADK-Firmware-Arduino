@@ -56,7 +56,7 @@ void setup() {
     Serial.println("Failed to initialize I2S!");
   }
 
-
+  // Feedback and Time of delay at 50%.
   Demo_controlChange(ctx, 34, 64, 1);
   Demo_controlChange(ctx, 35, 64, 1);
   
@@ -67,11 +67,11 @@ void loop() {
   static bool ledState, event;
   static unsigned long lastNoteOn;
 
-  uint8_t noteIntervals[4] = {0, 5, 7, 12};
-  uint8_t noteIntervalIndex = rand() % 4;
-
+  uint8_t noteIntervals[] = {0, 5, 7, 12, 24, 10, 14};
+  uint8_t noteIntervalIndex;
   unsigned long now = millis();
-  if (now - lastNoteOn >= 250) {
+  if (now - lastNoteOn >= 200) {
+    noteIntervalIndex = rand() % (sizeof(noteIntervals) / sizeof(uint8_t));
     ledState = !ledState;
     event = rand() % 2;
     digitalWrite(2, ledState);
@@ -80,8 +80,8 @@ void loop() {
     if (event) {
       Demo_noteOn(ctx, note, 127, 1);
       Demo_noteOn(ctx, note + noteIntervals[noteIntervalIndex], 127, 1);
-      Demo_controlChange(ctx, 32, rand() % 127, 1);
-      Demo_controlChange(ctx, 33, rand() % 64, 1);
+      Demo_controlChange(ctx, 32, rand() % 127, 1); // randomize filter frequency
+      Demo_controlChange(ctx, 33, rand() % 64, 1);  // randomize resonance
     } else {
       Demo_noteOff(ctx, note, 1);
       Demo_noteOff(ctx, note + noteIntervals[noteIntervalIndex], 1);

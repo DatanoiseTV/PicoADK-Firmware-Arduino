@@ -328,11 +328,11 @@ void Demo_noteOn(Demo__ctx_type_16 &_ctx, int note, int velocity, int channel){
    if(note == 12){
       _ctx.drum_gate = 0x10000 /* 1.000000 */;
    }
-   if((note >= 32) && (note <= 47)){
+   if((note >= 24) && (note <= 47)){
       _ctx.voice1_gate = 0x10000 /* 1.000000 */;
       _ctx.voice1_pitch = int_to_fix(note);
    }
-   if((note >= 48) && (note <= 63)){
+   if((note >= 48) && (note <= 80)){
       _ctx.voice2_gate = 0x10000 /* 1.000000 */;
       _ctx.voice2_pitch = int_to_fix(note);
    }
@@ -342,10 +342,10 @@ void Demo_noteOff(Demo__ctx_type_16 &_ctx, int note, int channel){
    if(note == 12){
       _ctx.drum_gate = 0x0 /* 0.000000 */;
    }
-   if((note >= 32) && (note <= 47)){
+   if((note >= 24) && (note <= 47)){
       _ctx.voice1_gate = 0x0 /* 0.000000 */;
    }
-   if((note >= 48) && (note <= 63)){
+   if((note >= 48) && (note <= 80)){
       _ctx.voice2_gate = 0x0 /* 0.000000 */;
    }
 }
